@@ -181,13 +181,10 @@ fibo = term_app(Y, term_lam("f",  term_lam("n", term_if0(term_op("<=", [term_var
 #     return primeCheck(n, 2)
 
 # Extended Lambda Calc Representation:
-# isPrime = lamn. Y (lamf.lamn.lamx. if(n==x, True, if(n % x == 0, False, f(n) (x+1))))   
+# isPrime = lamn. Y (lamf.lamn.lamx. if(n==x, True, if(n % x == 0, False, f(n) (x+1) )))   
+isPrime = term_lam("n", term_app(Y, term_lam("f", term_lam("n", term_lam("x", term_if0(term_op("==",[term_var("n"), term_var("x")]), term_btf(True), term_if0(term_op("==", [term_int(0), term_op("%", [term_var("n"), term_var("x")])]), term_btf(False),  term_app(term_app(term_var("f"), term_var("n")), term_op("+", [term_var("x"), term_int(1)])))))))))
 
-isPrime = term_lam("n", term_app(Y, term_lam("f", term_lam("n", term_lam("x", term_if0(term_op("==",[term_var("n"), term_var("x")]), term_btf(True), term_if0(term_op("%", [term_var("n"), term_var("x")]), term_btf(False), term_app(term_app(term_var("f"), term_var("n")), term_op("+", [term_var("x"), 1]))) ))))))
 ### ----- END OF SOLUTION ----- ###
-
-
-
 
 ### ------  END OF QUESTION 2 ------ ###
 
