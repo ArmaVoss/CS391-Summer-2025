@@ -4,51 +4,9 @@ In class we defined the extended lam calc to be
 x | lamx.t| t(t2)| n | opr | booleans | if(t1, t2, t3) | Y
 """
 
-### ------ START OF QUESTION 1 ------ ###
-
-def fibo(n):
-  return n if n <= 1 else fibo(n-1)+fibo(n-2)
-
-# represent fibo as a lambda-term in Church's lambda-calculus extended with--
-# integers, booleans, if-then-else, and some arithmetic operations.
-
-# --- SOLUTION --- #
-
-# I wrote this in the extended lambdacalc syntax we defined in class which I wrote about in my notes to self above
-# hope this is an acceptable form since its directly translates to the ml style syntax
-
-# Extended Lambda Calc Representation:
-# fib = Y(lamf. lamn. if(n<=1, n, (f(n-1) + f(n-2))))
-    # where  Y = lamf.(lamx.f(x(x)))(lamx.f(x(x))) -> note Y F enables F(Y (F)) since it the fixed point
-
-# --- END OF SOLUTION --- #
-
-### ------  END OF QUESTION 1 ------ ###
 
 
-
-### ------ START OF QUESTION 2 ------ ###
-
-# Write function for finding prime if number is prime in python, then write the lambda calc equivalent
-  
-###    ----- SOLUTION -----    ###
-def isPrime(n):
-    def primeCheck(n, div):
-        if n == div:
-            return True
-        elif (n % div == 0):
-            return False
-        else:
-            return primeCheck(n, div+1)
-    return primeCheck(n, 2)
-
-### ----- END OF SOLUTION ----- ###
-
-# Extended Lambda Calc Representation:
-# isPrime = lamn. Y (lamf.lamn.lamx. if(n==x, True, if(n % x == 0, False, f(n) (x+1))))   
-
-### ------  END OF QUESTION 2 ------ ###
-
+#Please read: I put question 3 at the top so I can actaully code the lam-term without errors
 
 ### ------ START OF QUESTION 3 ------ ###
 #Extend term subst in lambda0.py to handle operators
@@ -115,7 +73,7 @@ class term_if0(term):
         return f"TMif0({str(self.arg1)}, {str(self.arg2)}, {str(self.arg3)})"
     
 class term_op(term):
-    #should take a tuple of argument in arg2
+    #should take a list two numbers since operators handle 2 arguments
     def __init__(self, arg1, arg2):
         if len(arg2) != 2:
             raise TypeError("Did not provide a tuple of size 2 for operator term")
@@ -177,3 +135,59 @@ def term_subst(tm0, x00, sub):
 
 
 ### ------  END OF QUESTION 3 ------ ###
+
+
+
+### ------ START OF QUESTION 1 ------ ###
+
+# def fibo(n):
+#   return n if n <= 1 else fibo(n-1)+fibo(n-2)
+
+# represent fibo as a lambda-term in Church's lambda-calculus extended with--
+# integers, booleans, if-then-else, and some arithmetic operations.
+
+# --- SOLUTION --- #
+
+# I wrote this in the extended lambdacalc syntax we defined in class which I wrote about in my notes to self above
+# hope this is an acceptable form since its directly translates to the ml style syntax
+
+# Extended Lambda Calc Representation:
+# fib = Y(lamf. lamn. if(n<=1, n, (f(n-1) + f(n-2))))
+    # where  Y = lamf.(lamx.f(x(x)))(lamx.f(x(x))) -> note Y F enables F(Y (F)) since it the fixed point
+
+Y = term_lam("f", term_app(term_lam("x", term_app(term_var("f"), term_app(term_var("x"), term_var("x")))), term_lam("x", term_app(term_var("f"), term_app(term_var("x"), term_var("x"))))))
+# now in terms of the pyrepresentation
+fibo = term_app(Y, term_lam("f",  term_lam("n", term_if0(term_op("<=", [term_var("n"), term_int(1)]), term_var("n"), term_op("+", [term_app(term_var("f"), term_op("-", [term_var("n"), term_int(1)])), term_app(term_var("f"), term_op("-", [term_var("n"), term_int(2)]))])))))
+
+# --- END OF SOLUTION --- #
+
+### ------  END OF QUESTION 1 ------ ###
+
+
+
+### ------ START OF QUESTION 2 ------ ###
+
+# Write function for finding prime if number is prime in python, then write the lambda calc equivalent
+  
+###    ----- SOLUTION -----    ###
+# def isPrime(n):
+#     def primeCheck(n, div):
+#         if n == div:
+#             return True
+#         elif (n % div == 0):
+#             return False
+#         else:
+#             return primeCheck(n, div+1)
+#     return primeCheck(n, 2)
+
+# Extended Lambda Calc Representation:
+# isPrime = lamn. Y (lamf.lamn.lamx. if(n==x, True, if(n % x == 0, False, f(n) (x+1))))   
+
+isPrime = term_lam("n", term_app(Y, term_lam("f", term_lam("n", term_lam("x", term_if0(term_op("==",[term_var("n"), term_var("x")]), term_btf(True), term_if0(term_op("%", [term_var("n"), term_var("x")]), term_btf(False), term_app(term_app(term_var("f"), term_var("n")), term_op("+", [term_var("x"), 1]))) ))))))
+### ----- END OF SOLUTION ----- ###
+
+
+
+
+### ------  END OF QUESTION 2 ------ ###
+
